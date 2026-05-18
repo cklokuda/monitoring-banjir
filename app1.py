@@ -9,7 +9,7 @@ st.set_page_config(page_title="Dashboard Banjir BMKG Tembalang", layout="wide")
 
 # ==================== SENTUHAN DESAIN VISUAL (CSS) ====================
 # Menyisipkan gambar background keren bertema teknologi/satelit cuaca
-background_image_url = "https://cdn-jjmn.jawapos.com/images/4/2026/05/11/pemain-barcelona-merayakan-kemenangan-atas-real-madrid-yang-memastikan-gelar-juara-laliga-musim-ini-di-stadion-spotify-camp-nou-facebook-barcelona-uA2NR.webp" # Gambar bumi/teknologi dari Unsplash
+background_image_url = "https://img.piri.net/piri/upload/3/2026/2/18/beda5ea5-87aoshytvtcpclgr0izw1e.webp" # Gambar bumi/teknologi dari Unsplash
 
 st.markdown(
     f"""
@@ -110,43 +110,45 @@ with col2:
     })
     st.line_chart(df.set_index('Waktu Pengecekan'))
 
-# ==================== MENYISIPKAN VIDEO MENARIK (AUTOPLAY DENGAN LINK ANDA) ====================
+# ==================== MENYISIPKAN VIDEO MURNI TANPA ELEMEN YOUTUBE ====================
 st.markdown("---")
-st.subheader("🎥 Profil Stasiun Pantau & Edukasi Mitigasi")
 video_col1, video_col2 = st.columns(2)
 
-# Menggunakan ID Video dari link asli Anda: EJiMR9bIcRU
+# ID Video dari link asli Anda
 id_video_anda = "EJiMR9bIcRU"
+id_video_dua = "M99b2qWJ1m0"
 
 with video_col1:
-    st.write("**Simulasi Sistem Sensor Radar Air Geodesi**")
-    # Memanggil ID video Anda ke dalam format embed agar bisa berputar otomatis
+    # Menggunakan parameter kontrok tambahan (?controls=0&modestbranding=1&rel=0)
+    # Dan gaya CSS overflow hidden + pointer-events agar board YouTube tidak bisa diinteraksi
     st.components.v1.html(
         f"""
-        <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_anda}" 
-            title="YouTube video player" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <div style="position: relative; width: 100%; height: 315px; overflow: hidden; border-radius: 8px;">
+            <iframe width="100%" height="100%" 
+                src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_anda}&controls=0&modestbranding=1&rel=0&showinfo=0" 
+                title="Video Player 1" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
+                allowfullscreen>
+            </iframe>
+        </div>
         """,
         height=320,
     )
 
 with video_col2:
-    st.write("**Prosedur Tanggap Darurat Banjir BMKG & BPBD**")
-    # Video kedua menggunakan contoh video edukasi mitigasi resmi (M99b2qWJ1m0)
-    # Jika Anda punya link video lain nanti, tinggal ganti ID di bawah ini
-    id_video_dua = "M99b2qWJ1m0"
     st.components.v1.html(
         f"""
-        <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_dua}" 
-            title="YouTube video player" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <div style="position: relative; width: 100%; height: 315px; overflow: hidden; border-radius: 8px;">
+            <iframe width="100%" height="100%" 
+                src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_dua}&controls=0&modestbranding=1&rel=0&showinfo=0" 
+                title="Video Player 2" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
+                allowfullscreen>
+            </iframe>
+        </div>
         """,
         height=320,
     )
-# ====================================================================
+# =====================================================================
