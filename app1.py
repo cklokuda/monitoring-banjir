@@ -2,18 +2,19 @@ import streamlit as st
 import pandas as pd
 import requests 
 import time
+from datetime import datetime
+import pytz
 
 # 1. Konfigurasi Halaman Website
 st.set_page_config(page_title="Dashboard Banjir BMKG Tembalang", layout="wide")
 
 st.title("🚨 Pusat Kendali & Monitoring Banjir BMKG (LIVE DATA)")
 
-# Database Spasial Baru: Menggeser stasiun pantau ke Sungai Krengseng / Area Kampus Tembalang
 stasiun_pantau = {
     "id_stasiun": "ST-05-UND",
     "nama_sungai": "Sungai Krengseng (Sektor Kampus Tembalang)",
     "koordinat": "-7.0538, 110.4432",
-    "elevasi_dasar_msl": 115.2  # Elevasi dalam meter di atas permukaan laut (MSL)
+    "elevasi_dasar_msl": 115.2  
 }
 
 st.subheader(f"Stasiun: {stasiun_pantau['nama_sungai']} | Koordinat: {stasiun_pantau['koordinat']}")
@@ -23,11 +24,13 @@ st.markdown("---")
 # 2. Inisialisasi Penyimpanan Data di Website (Session State)
 if 'histori_curah_hujan' not in st.session_state:
     st.session_state.histori_curah_hujan = [0.0, 0.0, 0.0]
-    st.session_state.waktu = ["13:00:00", "14:00:00", "15:00:00"]
+    # Atur waktu default awal agar langsung menyesuaikan WIB saat web pertama kali dimuat
+    tz_jkt = pytz.timezone('Asia/Jakarta')
+    waktu_sekarang_init = datetime.now(tz_jkt).strftime("%H:%M:%S")
+    st.session_state.waktu = [waktu_sekarang_init, waktu_sekarang_init, waktu_sekarang_init]
 
-# 3. Fungsi Mengambil Data Aktual dari API Weather Berdasarkan Koordinat Baru
+# 3. Fungsi Mengambil Data Aktual dari API Weather
 def ambil_data_api_aktual():
-    # Menembak koordinat presisi Sungai Krengseng Tembalang
     url = f"https://api.open-meteo.com/v1/forecast?latitude=-7.0538&longitude=110.4432&current=rain"
     try:
         respon = requests.get(url).json()
@@ -39,7 +42,10 @@ def ambil_data_api_aktual():
 # 4. Tombol Akses Sinkronisasi Sensor Lapangan
 if st.button("📡 Tarik Data Satelit & Sensor Cuaca Aktual"):
     curah_hujan_baru = ambil_data_api_aktual()
-    waktu_baru = time.strftime("%H:%M:%S")
+    
+    # KUNCI PERBAIKAN WAKTU: Paksa server menggunakan Zona Waktu Asia/Jakarta (WIB)
+    tz_jkt = pytz.timezone('Asia/Jakarta')
+    waktu_baru = datetime.now(tz_jkt).strftime("%H:%M:%S")
     
     st.session_state.histori_curah_hujan.append(curah_hujan_baru)
     st.session_state.waktu.append(waktu_baru)
@@ -48,7 +54,6 @@ if st.button("📡 Tarik Data Satelit & Sensor Cuaca Aktual"):
 hujan_sekarang = st.session_state.histori_curah_hujan[-1]
 waktu_sekarang = st.session_state.waktu[-1]
 
-# Logika Pendekatan Teknik Geodesi: Korelasi Curah Hujan Aktual dengan Estimasi Kenaikan Muka Air
 tinggi_air_estimasi = 95 + (hujan_sekarang * 25) 
 
 col1, col2 = st.columns([1, 2])
@@ -57,12 +62,10 @@ with col1:
     st.metric(label="Curah Hujan Aktual (Open-Meteo API)", value=f"{hujan_sekarang} mm")
     st.metric(label=f"Estimasi Tinggi Air Sungai ({waktu_sekarang})", value=f"{int(tinggi_air_estimasi)} cm")
     
-    # Penentuan Status & Pemicu Alarm berbasis Interaksi Pengguna
     if tinggi_air_estimasi >= 200:
         st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
         st.write(f"**Peringatan Otomatis:** Debit limpasan permukaan di {stasiun_pantau['nama_sungai']} melebihi ambang batas aman!")
         
-        # Audio Engine: Kebal Proteksi Autoplay Chrome
         st.components.v1.html(
             """
             <audio id="alarm-keras" loop><source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3"></audio>
@@ -81,7 +84,6 @@ with col1:
         st.write("Aliran hidrologi sekitar Tembalang terpantau lancar dan stabil.")
 
 with col2:
-    # Representasi Grafik Spasio-Temporal
     df = pd.DataFrame({
         'Waktu Pengecekan': st.session_state.waktu,
         'Curah Hujan (mm)': st.session_state.histori_curah_hujan
