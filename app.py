@@ -54,7 +54,7 @@ with col1:
 
         # Memicu bunyi alarm otomatis lewat browser website
         st.components.v1.html(
-            '<audio autoplay loop><source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg"></audio>',
+            '<audio autoplay loop><source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3"></audio>',
             height=0
         )
     elif 150 <= tinggi_sekarang < 200:
