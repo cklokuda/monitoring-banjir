@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests 
 import time
-from datetime import datetime
-import pytz
+from datetime import datetime, timedelta # Menggunakan timedelta bawaan Python
 
 # 1. Konfigurasi Halaman Website
 st.set_page_config(page_title="Dashboard Banjir BMKG Tembalang", layout="wide")
@@ -24,9 +23,8 @@ st.markdown("---")
 # 2. Inisialisasi Penyimpanan Data di Website (Session State)
 if 'histori_curah_hujan' not in st.session_state:
     st.session_state.histori_curah_hujan = [0.0, 0.0, 0.0]
-    # Atur waktu default awal agar langsung menyesuaikan WIB saat web pertama kali dimuat
-    tz_jkt = pytz.timezone('Asia/Jakarta')
-    waktu_sekarang_init = datetime.now(tz_jkt).strftime("%H:%M:%S")
+    # Hitung WIB manual: Jam server (UTC) ditambah 7 jam
+    waktu_sekarang_init = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
     st.session_state.waktu = [waktu_sekarang_init, waktu_sekarang_init, waktu_sekarang_init]
 
 # 3. Fungsi Mengambil Data Aktual dari API Weather
@@ -43,9 +41,8 @@ def ambil_data_api_aktual():
 if st.button("📡 Tarik Data Satelit & Sensor Cuaca Aktual"):
     curah_hujan_baru = ambil_data_api_aktual()
     
-    # KUNCI PERBAIKAN WAKTU: Paksa server menggunakan Zona Waktu Asia/Jakarta (WIB)
-    tz_jkt = pytz.timezone('Asia/Jakarta')
-    waktu_baru = datetime.now(tz_jkt).strftime("%H:%M:%S")
+    # KUNCI PERBAIKAN WAKTU TANPA PYTZ: Tambah 7 jam dari waktu UTC server
+    waktu_baru = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
     
     st.session_state.histori_curah_hujan.append(curah_hujan_baru)
     st.session_state.waktu.append(waktu_baru)
