@@ -121,7 +121,7 @@ with video_col1:
     st.components.v1.html(
         """
         <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?si=GLHfu-eSGh3cuje_?autoplay=1&mute=1&loop=1&playlist=kGgLqC-fIQA" 
+            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist=kGgLqC-fIQA" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
@@ -136,7 +136,7 @@ with video_col2:
     st.components.v1.html(
         """
         <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?si=GLHfu-eSGh3cuje_?autoplay=1&mute=1&loop=1&playlist=M99b2qWJ1m0" 
+            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist=M99b2qWJ1m0" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
