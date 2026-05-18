@@ -125,7 +125,7 @@ with video_col1:
     st.components.v1.html(
         """
         <iframe width="100%" height="315" 
-            src="https://youtu.be/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm" 
+            src="https://youtu.be/embed/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
@@ -139,7 +139,7 @@ with video_col2:
     st.components.v1.html(
         """
         <iframe width="100%" height="315" 
-            src="https://youtu.be/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm" 
+            src="https://youtu.be/embed/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
