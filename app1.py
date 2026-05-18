@@ -110,18 +110,41 @@ with col2:
     })
     st.line_chart(df.set_index('Waktu Pengecekan'))
 
-# ==================== MENYISIPKAN VIDEO MENARIK ====================
+# ==================== MENYISIPKAN VIDEO MENARIK (AUTOPLAY) ====================
 st.markdown("---")
 st.subheader("🎥 Profil Stasiun Pantau & Edukasi Mitigasi")
 video_col1, video_col2 = st.columns(2)
 
+# Mengambil ID video YouTube dari link sebelumnya
+# Link 1: https://www.youtube.com/watch?v=kGgLqC-fIQA -> ID: kGgLqC-fIQA
+# Link 2: https://www.youtube.com/watch?v=M99b2qWJ1m0 -> ID: M99b2qWJ1m0
+
 with video_col1:
     st.write("**Simulasi Sistem Sensor Radar Air Geodesi**")
-    # Menyisipkan contoh video edukasi sensor radar dari YouTube
-    st.video("https://youtu.be/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm")
+    # Menggunakan HTML iframe agar bisa ditambahkan parameter autoplay=1 dan mute=1
+    st.components.v1.html(
+        """
+        <iframe width="100%" height="315" 
+            src="https://www.youtube.com/embed/kGgLqC-fIQA?autoplay=1&mute=1&loop=1&playlist=kGgLqC-fIQA" 
+            title="YouTube video player" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+        """,
+        height=320,
+    )
 
 with video_col2:
     st.write("**Prosedur Tanggap Darurat Banjir BMKG & BPBD**")
-    # Menyisipkan contoh video edukasi kesiapsiagaan bencana
-    st.video("https://www.youtube.com/watch?v=M99b2qWJ1m0")
+    st.components.v1.html(
+        """
+        <iframe width="100%" height="315" 
+            src="https://www.youtube.com/embed/M99b2qWJ1m0?autoplay=1&mute=1&loop=1&playlist=M99b2qWJ1m0" 
+            title="YouTube video player" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+        """,
+        height=320,
+    )
 # ====================================================================
