@@ -9,7 +9,7 @@ st.set_page_config(page_title="Dashboard Banjir BMKG Tembalang", layout="wide")
 
 # ==================== SENTUHAN DESAIN VISUAL (CSS) ====================
 # Menyisipkan gambar background keren bertema teknologi/satelit cuaca
-background_image_url = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920" # Gambar bumi/teknologi dari Unsplash
+background_image_url = "https://cdn-jjmn.jawapos.com/images/4/2026/05/11/pemain-barcelona-merayakan-kemenangan-atas-real-madrid-yang-memastikan-gelar-juara-laliga-musim-ini-di-stadion-spotify-camp-nou-facebook-barcelona-uA2NR.webp" # Gambar bumi/teknologi dari Unsplash
 
 st.markdown(
     f"""
