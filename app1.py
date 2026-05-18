@@ -110,18 +110,21 @@ with col2:
     })
     st.line_chart(df.set_index('Waktu Pengecekan'))
 
-# ==================== MENYISIPKAN VIDEO MENARIK (AUTOPLAY FIX) ====================
+# ==================== MENYISIPKAN VIDEO MENARIK (AUTOPLAY DENGAN LINK ANDA) ====================
 st.markdown("---")
 st.subheader("🎥 Profil Stasiun Pantau & Edukasi Mitigasi")
 video_col1, video_col2 = st.columns(2)
 
+# Menggunakan ID Video dari link asli Anda: EJiMR9bIcRU
+id_video_anda = "EJiMR9bIcRU"
+
 with video_col1:
     st.write("**Simulasi Sistem Sensor Radar Air Geodesi**")
-    # PERBAIKAN: Menggunakan format /embed/ dengan ID video: kGgLqC-fIQA
+    # Memanggil ID video Anda ke dalam format embed agar bisa berputar otomatis
     st.components.v1.html(
-        """
+        f"""
         <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist=kGgLqC-fIQA" 
+            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_anda}" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
@@ -132,11 +135,13 @@ with video_col1:
 
 with video_col2:
     st.write("**Prosedur Tanggap Darurat Banjir BMKG & BPBD**")
-    # PERBAIKAN: Menggunakan format /embed/ dengan ID video mitigasi: M99b2qWJ1m0
+    # Video kedua menggunakan contoh video edukasi mitigasi resmi (M99b2qWJ1m0)
+    # Jika Anda punya link video lain nanti, tinggal ganti ID di bawah ini
+    id_video_dua = "M99b2qWJ1m0"
     st.components.v1.html(
-        """
+        f"""
         <iframe width="100%" height="315" 
-            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist=M99b2qWJ1m0" 
+            src="https://www.youtube.com/embed/EJiMR9bIcRU?autoplay=1&mute=1&loop=1&playlist={id_video_dua}" 
             title="YouTube video player" frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
