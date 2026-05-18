@@ -2,10 +2,34 @@ import streamlit as st
 import pandas as pd
 import requests 
 import time
-from datetime import datetime, timedelta # Menggunakan timedelta bawaan Python
+from datetime import datetime, timedelta
 
 # 1. Konfigurasi Halaman Website
 st.set_page_config(page_title="Dashboard Banjir BMKG Tembalang", layout="wide")
+
+# ==================== SENTUHAN DESAIN VISUAL (CSS) ====================
+# Menyisipkan gambar background keren bertema teknologi/satelit cuaca
+background_image_url = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920" # Gambar bumi/teknologi dari Unsplash
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("{background_image_url}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+    }}
+    /* Membuat teks judul dan subheader agar lebih kontras di atas background */
+    h1, h2, h3, p, .stMetric {{
+        color: white !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+# ======================================================================
 
 st.title("🚨 Pusat Kendali & Monitoring Banjir BMKG (LIVE DATA)")
 
@@ -23,7 +47,6 @@ st.markdown("---")
 # 2. Inisialisasi Penyimpanan Data di Website (Session State)
 if 'histori_curah_hujan' not in st.session_state:
     st.session_state.histori_curah_hujan = [0.0, 0.0, 0.0]
-    # Hitung WIB manual: Jam server (UTC) ditambah 7 jam
     waktu_sekarang_init = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
     st.session_state.waktu = [waktu_sekarang_init, waktu_sekarang_init, waktu_sekarang_init]
 
@@ -40,8 +63,6 @@ def ambil_data_api_aktual():
 # 4. Tombol Akses Sinkronisasi Sensor Lapangan
 if st.button("📡 Tarik Data Satelit & Sensor Cuaca Aktual"):
     curah_hujan_baru = ambil_data_api_aktual()
-    
-    # KUNCI PERBAIKAN WAKTU TANPA PYTZ: Tambah 7 jam dari waktu UTC server
     waktu_baru = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
     
     st.session_state.histori_curah_hujan.append(curah_hujan_baru)
@@ -53,6 +74,7 @@ waktu_sekarang = st.session_state.waktu[-1]
 
 tinggi_air_estimasi = 95 + (hujan_sekarang * 25) 
 
+# SUSUNAN LAYOUT TAMPILAN WEBSITE
 col1, col2 = st.columns([1, 2])
 
 with col1:
@@ -81,8 +103,25 @@ with col1:
         st.write("Aliran hidrologi sekitar Tembalang terpantau lancar dan stabil.")
 
 with col2:
+    # Grafik Tren Curah Hujan
     df = pd.DataFrame({
         'Waktu Pengecekan': st.session_state.waktu,
         'Curah Hujan (mm)': st.session_state.histori_curah_hujan
     })
     st.line_chart(df.set_index('Waktu Pengecekan'))
+
+# ==================== MENYISIPKAN VIDEO MENARIK ====================
+st.markdown("---")
+st.subheader("🎥 Profil Stasiun Pantau & Edukasi Mitigasi")
+video_col1, video_col2 = st.columns(2)
+
+with video_col1:
+    st.write("**Simulasi Sistem Sensor Radar Air Geodesi**")
+    # Menyisipkan contoh video edukasi sensor radar dari YouTube
+    st.video("https://youtu.be/EJiMR9bIcRU?si=u9UOpHP5DZJR4Xvm")
+
+with video_col2:
+    st.write("**Prosedur Tanggap Darurat Banjir BMKG & BPBD**")
+    # Menyisipkan contoh video edukasi kesiapsiagaan bencana
+    st.video("https://www.youtube.com/watch?v=M99b2qWJ1m0")
+# ====================================================================
