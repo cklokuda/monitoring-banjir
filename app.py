@@ -52,17 +52,18 @@ with col1:
         st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
         st.write("**Tindakan Petugas BMKG:** Segera nyalakan sirine desa dan hubungi Tim SAR/BPBD Tembalang!")
 
-        # PERBAIKAN: Menggunakan link Soundjay + JavaScript Bypass Autoplay Chrome
+        # Memicu bunyi alarm otomatis menggunakan link alternatif Google yang lebih aman dari blokir internet
         st.components.v1.html(
             """
             <audio id="alarm-keras" loop>
+                <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
                 <source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3">
             </audio>
             <script>
                 var audio = document.getElementById("alarm-keras");
-                audio.volume = 1.0; // Memaksa volume ke tingkat maksimal sistem
+                audio.volume = 1.0; // Volume maksimal
                 
-                // Bypass proteksi Chrome melalui deteksi klik interaksi sebelumnya
+                // Memicu paksa suara melalui interaksi klik pengguna
                 document.addEventListener('click', function() {
                     audio.play();
                 });
