@@ -52,22 +52,61 @@ with col1:
         st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
         st.write("**Tindakan Petugas BMKG:** Segera nyalakan sirine desa dan hubungi Tim SAR/BPBD Tembalang!")
 
-        # Memicu bunyi alarm otomatis menggunakan link alternatif Google yang lebih aman dari blokir internet
+        # AMPLIFIER AUDIO ENGINE: Menggunakan GainNode untuk mendongkrak volume melebihi batas normal
         st.components.v1.html(
             """
-            <audio id="alarm-keras" loop>
-                <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
+            <audio id="alarm-keras" loop crossOrigin="anonymous">
                 <source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3">
+                <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
             </audio>
+
             <script>
                 var audio = document.getElementById("alarm-keras");
-                audio.volume = 1.0; // Volume maksimal
-                
-                // Memicu paksa suara melalui interaksi klik pengguna
-                document.addEventListener('click', function() {
+                var audioContextStarted = false;
+
+                function kuatkanDanMainkanSuara() {
+                    if (audioContextStarted) {
+                        audio.play();
+                        return;
+                    }
+
+                    // 1. Buat sistem Audio Context standar industri
+                    var AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        var context = new AudioContext();
+                        
+                        // 2. Ambil sumber suara dari tag audio di atas
+                        var source = context.createMediaElementSource(audio);
+                        
+                        // 3. Buat node "Amplifier" (GainNode)
+                        var gainNode = context.createGain();
+                        
+                        # DONGKRAK VOLUME DI SINI: Nilai 3.5 berarti suara dikuatkan 3.5 kali lipat dari aslinya!
+                        gainNode.gain.value = 3.5; 
+                        
+                        # Jalur kabel audio digital: Suara -> Amplifier -> Speaker Laptop
+                        source.connect(gainNode);
+                        gainNode.connect(context.destination);
+                        
+                        if (context.state === 'suspended') {
+                            context.resume();
+                        }
+                        audioContextStarted = true;
+                    }
+                    
                     audio.play();
+                }
+
+                # Pemicu Otomatis Langsung
+                kuatkanDanMainkanSuara();
+
+                # Pemicu Cadangan Wajib: Klik di area manapun di dalam web akan langsung menggelegarkan suara
+                document.addEventListener('click', function() {
+                    kuatkanDanMainkanSuara();
                 });
-                audio.play();
+                window.parent.document.addEventListener('click', function() {
+                    kuatkanDanMainkanSuara();
+                });
             </script>
             """,
             height=0
