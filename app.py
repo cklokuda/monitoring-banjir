@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time
 import sys
+from datetime import datetime, timedelta # TAMBAHAN: Untuk mengunci waktu riil WIB
 
 # 1. Konfigurasi Halaman Website
 st.set_page_config(page_title="Dashboard Banjir BMKG", layout="wide")
@@ -14,14 +15,14 @@ st.markdown("---")
 # 2. Inisialisasi Penyimpanan Data di Website (Session State)
 if 'histori_air' not in st.session_state:
     st.session_state.histori_air = [90, 95, 110]
-    st.session_state.waktu = ["22:00:00", "22:05:00", "22:10:00"]
+    
+    # PERBAIKAN: Set waktu awal agar langsung menyesuaikan WIB nyata (UTC server + 7 jam)
+    waktu_sekarang_init = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
+    st.session_state.waktu = [waktu_sekarang_init, waktu_sekarang_init, waktu_sekarang_init]
 
 # 3. Fungsi Simulasi Tren Kenaikan Air Perlahan (Skenario Banjir)
 def simulasi_baca_sensor():
-    # Mengambil angka terakhir lalu menaikkannya secara logis (5-15 cm)
     tinggi_terakhir = st.session_state.histori_air[-1]
-
-    # Jika sudah terlalu tinggi/banjir, buat fluktuasi surut atau tetap
     if tinggi_terakhir > 250:
         import random
         return tinggi_terakhir + random.randint(-20, 5)
@@ -32,7 +33,9 @@ def simulasi_baca_sensor():
 # 4. Tombol untuk Simulasi Waktu Berjalan (Menerima Data Baru dari Sensor)
 if st.button("🔄 Ambil Data Sensor Terbaru (M2M)"):
     tinggi_baru = simulasi_baca_sensor()
-    waktu_baru = time.strftime("%H:%M:%S")
+    
+    # KUNCI PERBAIKAN WAKTU NYATA: Memaksa server mencatat waktu WIB saat tombol diklik
+    waktu_baru = (datetime.utcnow() + timedelta(hours=7)).strftime("%H:%M:%S")
 
     # Masukkan data baru ke dalam histori website
     st.session_state.histori_air.append(tinggi_baru)
@@ -47,40 +50,17 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.metric(label=f"Ketinggian Air Terakhir ({waktu_sekarang})", value=f"{tinggi_sekarang} cm")
 
-    # Logika Penentuan Status & Pemicu Alarm Suara di Website
+    # Logika Penentuan Status & Pemicu Alarm Suara Resmi Bawaan Streamlit
     if tinggi_sekarang >= 200:
         st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
         st.write("**Tindakan Petugas BMKG:** Segera nyalakan sirine desa dan hubungi Tim SAR/BPBD Tembalang!")
 
-        # KODE STABIL: Menggunakan audio ganda tanpa bypass CORS yang berisiko diblokir browser
-        st.components.v1.html(
-            """
-            <audio id="alarm-keras" loop>
-                <source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3">
-                <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
-            </audio>
-
-            <script>
-                var audio = document.getElementById("alarm-keras");
-                
-                // Set volume internal browser ke tingkat maksimal (1.0)
-                audio.volume = 1.0;
-
-                function mainkanSuara() {
-                    audio.play().catch(function(error) {
-                        console.log("Autoplay ditangguhkan oleh browser");
-                    });
-                }
-
-                # 1. Jalankan langsung saat komponen dimuat
-                mainkanSuara();
-
-                # 2. Pemicu utama interaksi: Klik di dalam area halaman web
-                document.addEventListener('click', mainkanSuara);
-                window.parent.document.addEventListener('click', mainkanSuara);
-            </script>
-            """,
-            height=0
+        # Menggunakan st.audio resmi yang aman dan stabil
+        st.audio(
+            "https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3", 
+            format="audio/mp3", 
+            autoplay=True, 
+            loop=True
         )
     elif 150 <= tinggi_sekarang < 200:
         st.warning("⚠️ STATUS: SIAGA (Waspada Luapan)")
