@@ -67,11 +67,37 @@ def jalankan_dashboard_live():
         st.metric(label="Live Curah Hujan Satelit (API)", value=f"{hujan_riil} mm")
         st.metric(label=f"Ketinggian Air Kali Babon ({waktu_sekarang})", value=f"{int(tinggi_sekarang)} cm")
 
-        # Pemicu Alarm Suara Mandiri Berbasis File alarm.mp3 Anda
+        # Pemicu Alarm Suara Mandiri Berbasis File alarm.mp3 Anda (Hidden & Forced)
         if tinggi_sekarang >= 200:
             st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
             st.write("**Tindakan Petugas BMKG:** Segera bunyikan sirine evakuasi warga!")
-            st.audio("alarm.mp3", format="audio/mp3", autoplay=True, loop=True)
+            
+            # Menggunakan trik HTML + JS tersembunyi agar bar audio putih-abu-abu hilang dari layar
+            st.components.v1.html(
+                """
+                <audio id="alarm-custom" loop>
+                    <source src="app/alarm.mp3" type="audio/mp3">
+                </audio>
+                <script>
+                    var audio = document.getElementById("alarm-custom");
+                    audio.volume = 1.0;
+                    
+                    function paksaPutar() {
+                        audio.play().catch(function(error) {
+                            console.log("Autoplay diblokir, menunggu interaksi pengguna.");
+                        });
+                    }
+                    
+                    // Langsung coba putar
+                    paksaPutar();
+                    
+                    // Begitu pengguna klik di mana saja pada halaman, suara langsung menggelegar keluar
+                    window.parent.document.addEventListener('click', paksaPutar);
+                    document.addEventListener('click', paksaPutar);
+                </script>
+                """,
+                height=0 # Diset 0 agar bar pemutar audio tidak terlihat sama sekali di dashboard
+            )
         elif 150 <= tinggi_sekarang < 200:
             st.warning("⚠️ STATUS: SIAGA (Waspada Luapan)")
             st.write("**Tindakan Petugas BMKG:** Siagakan logistik penanganan bencana.")
