@@ -50,17 +50,30 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.metric(label=f"Ketinggian Air Terakhir ({waktu_sekarang})", value=f"{tinggi_sekarang} cm")
 
-    # Logika Penentuan Status & Pemicu Alarm Suara Resmi Bawaan Streamlit
+    # Logika Penentuan Status & Pemicu Alarm Suara di Website
     if tinggi_sekarang >= 200:
         st.error("🚨 STATUS: AWAS (BAHAYA BANJIR)")
         st.write("**Tindakan Petugas BMKG:** Segera nyalakan sirine desa dan hubungi Tim SAR/BPBD Tembalang!")
 
-        # Menggunakan st.audio resmi yang aman dan stabil
-        st.audio(
-            "https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3", 
-            format="audio/mp3", 
-            autoplay=True, 
-            loop=True
+        # Memicu bunyi alarm otomatis menggunakan link alternatif Google yang lebih aman dari blokir internet
+        st.components.v1.html(
+            """
+            <audio id="alarm-keras" loop>
+                <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
+                <source src="https://www.soundjay.com/buttons/sounds/alarm-clock-01.mp3" type="audio/mp3">
+            </audio>
+            <script>
+                var audio = document.getElementById("alarm-keras");
+                audio.volume = 1.0; // Volume maksimal
+                
+                // Memicu paksa suara melalui interaksi klik pengguna
+                document.addEventListener('click', function() {
+                    audio.play();
+                });
+                audio.play();
+            </script>
+            """,
+            height=0
         )
     elif 150 <= tinggi_sekarang < 200:
         st.warning("⚠️ STATUS: SIAGA (Waspada Luapan)")
